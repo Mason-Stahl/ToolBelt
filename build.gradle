@@ -1,180 +1,76 @@
 plugins {
-    id 'java-library'
-    id 'eclipse'
-    id 'idea'
-    id 'maven-publish'
-    id 'net.neoforged.moddev' version '2.0.141'
+	id 'net.fabricmc.fabric-loom' version "${loom_version}"
+	id 'maven-publish'
 }
 
-neoForge.version = "26.2.0.7-beta"
-version = "2.10.0"
-group = "dev.gigaherz.toolbelt"
-base.archivesName = "ToolBelt-${neoForge.minecraftVersion}"
+version = project.version
+group = project.group
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(25)
-
-java.withSourcesJar()
-
-sourceSets {
-    main.resources.srcDirs += 'src/main/generated_resources'
-}
+base.archivesName = "ToolBelt-Fabric-${project.minecraft_version}"
 
 repositories {
-    maven {
-        // location of the maven that hosts JEI files since January 2023
-        name = "Jared's maven"
-        url = "https://maven.blamejared.com/"
-    }
-    maven {
-        name = "Tterrag maven"
-        url "https://maven.tterrag.com/"
-    }
-    maven { // CURIOS
-        name = "C4 maven"
-        url "https://maven.theillusivec4.top/"
-    }
-    maven {
-        name = "Dogforce Games maven"
-        url 'https://www.dogforce-games.com/maven/'
-    }
-    maven {
-        name = "Cursemaven"
-        url "https://cursemaven.com"
-        content {
-            includeGroup "curse.maven"
-        }
-    }
-    maven {
-        // Accessories
-        name = "Wispforest maven"
-        url 'https://maven.wispforest.io/releases'
-    }
-    //maven { url 'https://maven.su5ed.dev/releases' }
-    //maven { url 'https://maven.fabricmc.net' }
-    maven { url 'https://maven.shedaniel.me/' }
-    maven {
-        url "$projectDir/../CommonMaven"
-    }
-    mavenLocal()
+	// Add repositories to retrieve artifacts from in here.
+	// You should only use this when depending on other mods because
+	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
 }
 
-neoForge {
-    runs {
-        // applies to all the run configs below
-        configureEach {
-            gameDirectory = project.file('run')
-            logLevel = org.slf4j.event.Level.DEBUG
-            //jvmArgument "-Dmixin.debug.export=true"
-            //jvmArgument "-Dmixin.debug.verbose=true"
-        }
+loom {
+	splitEnvironmentSourceSets()
 
-        client {
-            client()
-        }
-
-        client2 {
-            client()
-
-            programArguments.addAll '--username', 'Dev2'
-
-
-        }
-
-        server {
-            server()
-        }
-
-        clientData {
-            clientData()
-            programArguments.addAll '--mod', 'toolbelt', '--all', '--output', file('src/main/generated_resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
-        }
-    }
-
-    mods {
-        thismod {
-            sourceSet(sourceSets.main)
-        }
-    }
+	mods {
+		"toolbelt" {
+			sourceSet sourceSets.main
+			sourceSet sourceSets.client
+		}
+	}
 }
 
 dependencies {
-    compileOnly "dev.gigaherz.sewingkit:SewingKit-26.2:2.9.0"
-    runtimeOnly "dev.gigaherz.sewingkit:SewingKit-26.2:2.9.0"
+	// To change the versions see the gradle.properties file
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-    compileOnly "mezz.jei:jei-26.2-common-api:30.2.0.15"
-    runtimeOnly "mezz.jei:jei-26.2-common:30.2.0.15"
-    compileOnly "mezz.jei:jei-26.2-neoforge-api:30.2.0.15"
-    runtimeOnly "mezz.jei:jei-26.2-neoforge:30.2.0.15"
+	// Fabric API. This is technically optional, but we depend on it for networking, keybindings, and screens.
+	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+}
 
+processResources {
+	def version = project.version
+	inputs.property "version", version
 
-    //implementation("io.wispforest:accessories-neoforge:1.0.0-beta.9+1.21")
+	filesMatching("fabric.mod.json") {
+		expand "version": version
+	}
+}
 
-    compileOnly "top.theillusivec4.curios:curios-neoforge:15.0.0-beta.1+26.1"
-    //runtimeOnly "top.theillusivec4.curios:curios-neoforge:15.0.0-beta.1+26.1"
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 25
+}
 
-    //runtimeOnly fg.deobf("curse.maven:corail-tombstone-243707:3836552")
+java {
+	withSourcesJar()
+
+	sourceCompatibility = JavaVersion.VERSION_25
+	targetCompatibility = JavaVersion.VERSION_25
 }
 
 jar {
-    from(files('LICENSE.txt'))
+	def projectName = project.name
+	inputs.property "projectName", projectName
 
-    manifest {
-        attributes([
-                "Specification-Title": "toolbelt",
-                "Specification-Vendor": "gigaherz",
-                "Specification-Version": "1", // We are version 1 of ourselves
-                "Implementation-Title": "toolbelt",
-                "Implementation-Version": project.version,
-                "Implementation-Vendor" :"gigaherz",
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-        ])
-    }
+	from("LICENSE.txt") {
+		rename { "${it}_$projectName"}
+	}
 }
 
-tasks.named('sourcesJar') {
-    from(files('LICENSE.txt'))
-}
+publishing {
+	publications {
+		create("mavenJava", MavenPublication) {
+			from components.java
+		}
+	}
 
-project.afterEvaluate {
-    publish.dependsOn('build')
-    publishing {
-        publications {
-            mavenJava(MavenPublication) {
-                artifactId project.archivesBaseName
-                from components.java
-            }
-        }
-
-        repositories {
-            if (findProperty("RELEASE") && System.env.giga_maven_host != null) {
-                System.out.println("Remote publish enabled on " + System.env.giga_maven_host)
-                maven {
-                    url System.env.giga_maven_host
-                    credentials {
-                        username System.env.giga_maven_user
-                        password System.env.giga_maven_password
-                    }
-                }
-            }
-            else {
-                System.out.println("Remote publish disabled.")
-                maven {
-                    url "$projectDir/../CommonMaven"
-                }
-            }
-        }
-    }
-}
-
-
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
-}
-
-// IDEA no longer automatically downloads sources/javadoc jars for dependencies, so we need to explicitly enable the behavior.
-idea {
-    module {
-        downloadSources = true
-        downloadJavadoc = true
-    }
+	repositories {
+		// Add repositories to publish to here.
+	}
 }

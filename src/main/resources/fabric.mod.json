@@ -1,0 +1,30 @@
+{
+	"schemaVersion": 1,
+	"id": "toolbelt",
+	"version": "${version}",
+	"name": "Tool Belt",
+	"description": "Declutter your inventory of tools",
+	"authors": [
+		"gigaherz",
+		"Mason-Stahl"
+	],
+	"contact": {
+		"sources": "https://github.com/Mason-Stahl/ToolBelt-Fabric"
+	},
+	"license": "BSD-3-Clause",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"dev.gigaherz.toolbelt.ToolBelt"
+		],
+		"client": [
+			"dev.gigaherz.toolbelt.client.ToolBeltClient"
+		]
+	},
+	"depends": {
+		"fabricloader": ">=0.19.3",
+		"minecraft": "~26.2",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}
