@@ -5,7 +5,12 @@ import dev.gigaherz.toolbelt.common.BeltMenu;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import dev.gigaherz.toolbelt.slot.BeltSlotAttachment;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import org.jspecify.annotations.Nullable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -92,6 +97,13 @@ public class ToolBeltItem extends Item
         if (player instanceof ServerPlayer serverPlayer)
             BeltMenu.open(serverPlayer, serverPlayer.getInventory().getSelectedSlot());
         return InteractionResult.SUCCESS;
+    }
+
+    @Override
+    public void inventoryTick(ItemStack stack, ServerLevel level, Entity entity, @Nullable EquipmentSlot slot)
+    {
+        if (entity instanceof ServerPlayer player)
+            BeltSlotAttachment.returnToBeltSlot(player, stack);
     }
 
     /** Editing the belt's contents while holding it shouldn't replay the equip animation. */

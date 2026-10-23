@@ -20,6 +20,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.Unit;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import org.slf4j.Logger;
@@ -42,6 +43,15 @@ public class ToolBelt implements ModInitializer
             .build();
 
     /**
+     * Marks a belt that left the belt slot on death, so it goes back into the belt slot as soon
+     * as it's back in the player's inventory (from a grave, or picked up from the ground).
+     */
+    public static final DataComponentType<Unit> RETURN_TO_BELT_SLOT = DataComponentType.<Unit>builder()
+            .persistent(Unit.CODEC)
+            .networkSynchronized(Unit.STREAM_CODEC)
+            .build();
+
+    /**
      * The opening data is the player inventory slot that holds the belt being edited.
      */
     public static final ExtendedMenuType<BeltMenu, Integer> BELT_MENU =
@@ -53,6 +63,7 @@ public class ToolBelt implements ModInitializer
         Registry.register(BuiltInRegistries.ITEM, BELT_KEY, BELT);
         Registry.register(BuiltInRegistries.ITEM, POUCH_KEY, POUCH);
         Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, id("belt_size"), BELT_SIZE);
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, id("return_to_belt_slot"), RETURN_TO_BELT_SLOT);
         Registry.register(BuiltInRegistries.MENU, id("belt_container"), BELT_MENU);
         Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, id("belt_upgrade"), BeltUpgradeRecipe.SERIALIZER);
 

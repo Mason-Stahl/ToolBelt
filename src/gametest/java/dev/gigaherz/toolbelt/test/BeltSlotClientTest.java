@@ -176,6 +176,27 @@ public class BeltSlotClientTest implements FabricClientGameTest
                         e -> e.getItem().is(ToolBelt.BELT) && firstInBelt(e.getItem()).is(Items.IRON_SWORD)).isEmpty();
                 check(dropped, "belt slot's belt was not dropped on death");
             });
+
+            // Respawn, then get the dropped belt back (as a grave would). It should return to the belt slot.
+            context.clickScreenButton("deathScreen.respawn");
+            context.waitTicks(20);
+            world.getServer().runOnServer(server -> {
+                ServerPlayer p = player(server);
+                ItemEntity drop = server.overworld().getEntitiesOfClass(ItemEntity.class, p.getBoundingBox().inflate(64),
+                        e -> e.getItem().is(ToolBelt.BELT) && firstInBelt(e.getItem()).is(Items.IRON_SWORD)).stream().findFirst().orElse(null);
+                check(drop != null, "could not find the dropped belt");
+                check(drop.getItem().has(ToolBelt.RETURN_TO_BELT_SLOT), "dropped belt is missing the return marker");
+                p.getInventory().setItem(12, drop.getItem().copy());
+                drop.discard();
+            });
+            context.waitTicks(5);
+            world.getServer().runOnServer(server -> {
+                ServerPlayer p = player(server);
+                ItemStack inSlot = BeltSlotAttachment.get(p);
+                check(inSlot.is(ToolBelt.BELT) && firstInBelt(inSlot).is(Items.IRON_SWORD), "belt did not return to the belt slot");
+                check(!inSlot.has(ToolBelt.RETURN_TO_BELT_SLOT), "return marker was not cleared");
+                check(p.getInventory().getItem(12).isEmpty(), "belt was duplicated when returning to the belt slot");
+            });
         }
     }
 }
