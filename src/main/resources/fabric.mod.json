@@ -22,10 +22,10 @@
 		]
 	},
 	"depends": {
-		"fabricloader": ">=0.20.1",
+		"fabricloader": ">=0.19.5",
 		"minecraft": "~26.3",
 		"java": ">=25",
-		"fabric-api": ">=0.165.0"
+		"fabric-api": ">=0.161.0"
 	},
 	"mixins": [
 		"toolbelt.mixins.json",

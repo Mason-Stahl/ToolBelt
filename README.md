@@ -12,8 +12,8 @@ This is a Fabric port of [gigaherz's Tool Belt](https://github.com/gigaherz/Tool
 You need:
 
 - Minecraft **26.3**
-- [Fabric Loader](https://fabricmc.net/use/installer/) **0.20.1** or newer
-- [Fabric API](https://modrinth.com/mod/fabric-api) **0.165.0+26.3** or newer
+- [Fabric Loader](https://fabricmc.net/use/installer/) **0.19.5** or newer
+- [Fabric API](https://modrinth.com/mod/fabric-api) **0.161.0+26.3** or newer
 - Java **25** (the official Minecraft launcher includes it)
 
 Steps:
