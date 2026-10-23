@@ -1,5 +1,6 @@
 package dev.gigaherz.toolbelt.common;
 
+import dev.gigaherz.toolbelt.belt.ToolBeltItem;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.Container;
@@ -8,10 +9,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
 
 /**
- * Presents a belt ItemStack's stored contents as a vanilla Container, writing changes
- * back through the holder so the caller decides where the belt actually lives
- * (held in hand, a specific inventory slot, etc). Menus and the swap logic both go
- * through this so they apply the same read/write rules.
+ * Presents a belt ItemStack's stored contents as a vanilla Container. Changes are written
+ * back through the holder, so the caller decides where the belt lives (an inventory slot,
+ * etc). The belt menu and the swap logic both go through this so they share the same rules.
+ *
+ * <p>Vanilla menu code sometimes edits the stack returned by {@link #getItem} in place and
+ * then calls {@link #setChanged}, so this keeps live stacks and writes them back on change.
  */
 public class BeltContainer implements Container
 {
@@ -23,33 +26,56 @@ public class BeltContainer implements Container
     }
 
     private final Holder holder;
-    private final int slots;
+    private NonNullList<ItemStack> items = NonNullList.create();
+    private ItemStack loadedFrom = null;
 
-    public BeltContainer(Holder holder, int slots)
+    public BeltContainer(Holder holder)
     {
         this.holder = holder;
-        this.slots = slots;
     }
 
-    private NonNullList<ItemStack> contents()
+    /** Reloads the cached stacks if the belt stack was replaced from outside. */
+    private NonNullList<ItemStack> items()
     {
-        NonNullList<ItemStack> items = NonNullList.withSize(slots, ItemStack.EMPTY);
-        ItemContainerContents contents = holder.getBelt().get(DataComponents.CONTAINER);
-        if (contents != null)
-            contents.copyInto(items);
+        ItemStack belt = holder.getBelt();
+        if (belt != loadedFrom)
+        {
+            int size = belt.getItem() instanceof ToolBeltItem ? ToolBeltItem.getBeltSize(belt) : 0;
+            items = NonNullList.withSize(size, ItemStack.EMPTY);
+            ItemContainerContents contents = belt.get(DataComponents.CONTAINER);
+            if (contents != null)
+                contents.copyInto(items);
+            loadedFrom = belt;
+        }
         return items;
+    }
+
+    private void save()
+    {
+        ItemStack belt = holder.getBelt();
+        if (!(belt.getItem() instanceof ToolBeltItem))
+            return;
+
+        ItemContainerContents contents = ItemContainerContents.fromItems(items);
+        if (contents.equals(belt.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY)))
+            return;
+
+        ItemStack updated = belt.copy();
+        updated.set(DataComponents.CONTAINER, contents);
+        holder.setBelt(updated);
+        loadedFrom = holder.getBelt();
     }
 
     @Override
     public int getContainerSize()
     {
-        return slots;
+        return items().size();
     }
 
     @Override
     public boolean isEmpty()
     {
-        for (ItemStack stack : contents())
+        for (ItemStack stack : items())
             if (!stack.isEmpty())
                 return false;
         return true;
@@ -58,27 +84,19 @@ public class BeltContainer implements Container
     @Override
     public ItemStack getItem(int slot)
     {
-        return slot >= 0 && slot < slots ? contents().get(slot) : ItemStack.EMPTY;
+        NonNullList<ItemStack> list = items();
+        return slot >= 0 && slot < list.size() ? list.get(slot) : ItemStack.EMPTY;
     }
 
     @Override
     public ItemStack removeItem(int slot, int count)
     {
         ItemStack existing = getItem(slot);
-        if (existing.isEmpty())
+        if (existing.isEmpty() || count <= 0)
             return ItemStack.EMPTY;
 
-        ItemStack taken;
-        if (count >= existing.getCount())
-        {
-            taken = existing.copy();
-            setItem(slot, ItemStack.EMPTY);
-        }
-        else
-        {
-            taken = existing.split(count);
-            setItem(slot, existing);
-        }
+        ItemStack taken = existing.split(count);
+        save();
         return taken;
     }
 
@@ -86,22 +104,22 @@ public class BeltContainer implements Container
     public ItemStack removeItemNoUpdate(int slot)
     {
         ItemStack existing = getItem(slot);
-        setItem(slot, ItemStack.EMPTY);
+        if (existing.isEmpty())
+            return ItemStack.EMPTY;
+        items.set(slot, ItemStack.EMPTY);
+        save();
         return existing;
     }
 
     @Override
     public void setItem(int slot, ItemStack newStack)
     {
-        if (slot < 0 || slot >= slots)
+        NonNullList<ItemStack> list = items();
+        if (slot < 0 || slot >= list.size())
             return;
 
-        NonNullList<ItemStack> items = contents();
-        items.set(slot, newStack);
-
-        ItemStack belt = holder.getBelt().copy();
-        belt.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(items));
-        holder.setBelt(belt);
+        list.set(slot, newStack);
+        save();
     }
 
     @Override
@@ -113,19 +131,20 @@ public class BeltContainer implements Container
     @Override
     public void setChanged()
     {
+        items();
+        save();
     }
 
     @Override
     public boolean stillValid(Player player)
     {
-        return !holder.getBelt().isEmpty();
+        return holder.getBelt().getItem() instanceof ToolBeltItem;
     }
 
     @Override
     public void clearContent()
     {
-        ItemStack belt = holder.getBelt().copy();
-        belt.remove(DataComponents.CONTAINER);
-        holder.setBelt(belt);
+        items().replaceAll(s -> ItemStack.EMPTY);
+        save();
     }
 }

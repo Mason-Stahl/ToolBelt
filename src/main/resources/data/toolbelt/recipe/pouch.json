@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "g": "minecraft:gold_ingot",
+    "l": "minecraft:leather",
+    "s": "minecraft:string"
+  },
+  "pattern": [
+    "sgs",
+    "l l",
+    "sls"
+  ],
+  "result": {
+    "id": "toolbelt:pouch"
+  }
+}

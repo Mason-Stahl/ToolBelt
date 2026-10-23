@@ -3,6 +3,7 @@
   "item.toolbelt.pouch": "Gürteltasche",
   "key.toolbelt.open": "Werkzeug wechseln",
   "key.toolbelt.category": "Werkzeuggürtel",
+  "key.category.toolbelt.toolbelt": "Werkzeuggürtel",
   "text.toolbelt.empty": "Leer",
   "text.toolbelt.swap": "Wechseln",
   "text.toolbelt.insert": "Einfügen",

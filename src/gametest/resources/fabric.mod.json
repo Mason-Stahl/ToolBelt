@@ -1,0 +1,15 @@
+{
+	"schemaVersion": 1,
+	"id": "toolbelt-test",
+	"version": "1.0.0",
+	"name": "Tool Belt client tests",
+	"environment": "client",
+	"entrypoints": {
+		"fabric-client-gametest": [
+			"dev.gigaherz.toolbelt.test.RadialMenuClientTest"
+		]
+	},
+	"depends": {
+		"toolbelt": "*"
+	}
+}

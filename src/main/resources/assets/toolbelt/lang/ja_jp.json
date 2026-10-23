@@ -3,6 +3,7 @@
   "item.toolbelt.pouch": "ベルトポーチ",
   "key.toolbelt.open": "道具の入れ替え",
   "key.toolbelt.category": "ツールベルト",
+  "key.category.toolbelt.toolbelt": "ツールベルト",
   "key.toolbelt.slot": "ベルト用のインベントリスロットを開く",
   "key.toolbelt.cycle.left": "左に回す",
   "key.toolbelt.cycle.right": "右に回す",

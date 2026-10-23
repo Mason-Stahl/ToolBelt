@@ -1,0 +1,93 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "Client",
+      "presentation": {
+        "group": "Mod Development - ToolBelt",
+        "order": 0
+      },
+      "projectName": "ToolBelt",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@/home/mason-stahl/docker/toolbelt/ToolBelt/build/moddev/clientRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@/home/mason-stahl/docker/toolbelt/ToolBelt/build/moddev/clientRunVmArgs.txt",
+        "-Dfml.modFolders\u003dthismod%%/home/mason-stahl/docker/toolbelt/ToolBelt/bin/main"
+      ],
+      "cwd": "${workspaceFolder}/run",
+      "env": {},
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "Client2",
+      "presentation": {
+        "group": "Mod Development - ToolBelt",
+        "order": 1
+      },
+      "projectName": "ToolBelt",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@/home/mason-stahl/docker/toolbelt/ToolBelt/build/moddev/client2RunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@/home/mason-stahl/docker/toolbelt/ToolBelt/build/moddev/client2RunVmArgs.txt",
+        "-Dfml.modFolders\u003dthismod%%/home/mason-stahl/docker/toolbelt/ToolBelt/bin/main"
+      ],
+      "cwd": "${workspaceFolder}/run",
+      "env": {},
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "ClientData",
+      "presentation": {
+        "group": "Mod Development - ToolBelt",
+        "order": 2
+      },
+      "projectName": "ToolBelt",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@/home/mason-stahl/docker/toolbelt/ToolBelt/build/moddev/clientDataRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@/home/mason-stahl/docker/toolbelt/ToolBelt/build/moddev/clientDataRunVmArgs.txt",
+        "-Dfml.modFolders\u003dthismod%%/home/mason-stahl/docker/toolbelt/ToolBelt/bin/main"
+      ],
+      "cwd": "${workspaceFolder}/run",
+      "env": {},
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "Server",
+      "presentation": {
+        "group": "Mod Development - ToolBelt",
+        "order": 3
+      },
+      "projectName": "ToolBelt",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@/home/mason-stahl/docker/toolbelt/ToolBelt/build/moddev/serverRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@/home/mason-stahl/docker/toolbelt/ToolBelt/build/moddev/serverRunVmArgs.txt",
+        "-Dfml.modFolders\u003dthismod%%/home/mason-stahl/docker/toolbelt/ToolBelt/bin/main"
+      ],
+      "cwd": "${workspaceFolder}/run",
+      "env": {},
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    }
+  ]
+}

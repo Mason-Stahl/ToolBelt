@@ -3,6 +3,7 @@
   "item.toolbelt.pouch": "Поясная сумка",
   "key.toolbelt.open": "Поменять инструмент",
   "key.toolbelt.category": "Пояс с инструментами",
+  "key.category.toolbelt.toolbelt": "Пояс с инструментами",
   "key.toolbelt.slot": "Открыть инвентарь слота для Пояса",
   "key.toolbelt.cycle.left": "Сменить инструмент влево",
   "key.toolbelt.cycle.right": "Сменить инструмент вправо",
