@@ -6,7 +6,8 @@
 	"environment": "client",
 	"entrypoints": {
 		"fabric-client-gametest": [
-			"dev.gigaherz.toolbelt.test.RadialMenuClientTest"
+			"dev.gigaherz.toolbelt.test.RadialMenuClientTest",
+			"dev.gigaherz.toolbelt.test.BeltSlotClientTest"
 		]
 	},
 	"depends": {

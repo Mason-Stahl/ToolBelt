@@ -1,6 +1,5 @@
 package dev.gigaherz.toolbelt.test;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import dev.gigaherz.toolbelt.belt.ToolBeltItem;
 import dev.gigaherz.toolbelt.client.RadialMenuScreen;
 import dev.gigaherz.toolbelt.client.ToolBeltClient;
@@ -58,9 +57,12 @@ public class RadialMenuClientTest implements FabricClientGameTest
             context.waitTicks(5);
             context.takeScreenshot("toolbelt_radial_hover");
 
-            context.getInput().pressMouse(InputConstants.MOUSE_BUTTON_LEFT);
-            context.waitTicks(10);
+            // Default is release-to-swap: letting go of the key over a slot swaps it, and the menu closes at once.
             context.getInput().releaseKey(ToolBeltClient.OPEN_TOOL_MENU_KEYBIND);
+            context.waitTicks(2);
+            boolean closed = context.computeOnClient(mc -> mc.gui.screen() == null);
+            if (!closed)
+                throw new AssertionError("Radial menu still open right after selecting");
             context.waitTicks(10);
             world.getConnection().waitForServerboundPackets();
 

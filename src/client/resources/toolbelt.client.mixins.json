@@ -3,6 +3,9 @@
   "package": "dev.gigaherz.toolbelt.mixin.client",
   "compatibilityLevel": "JAVA_25",
   "client": [
+    "AbstractContainerScreenAccessor",
+    "CreativeModeInventoryScreenMixin",
+    "InventoryScreenMixin",
     "KeyboardInputMixin"
   ],
   "injectors": {

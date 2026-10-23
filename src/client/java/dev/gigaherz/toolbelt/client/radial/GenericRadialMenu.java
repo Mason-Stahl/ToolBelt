@@ -183,6 +183,13 @@ public class GenericRadialMenu
         setHovered(-1);
     }
 
+    /** Closes without the closing animation, e.g. right after a selection. */
+    public void closeImmediately()
+    {
+        state = State.CLOSED;
+        setHovered(-1);
+    }
+
     public void tick()
     {
         if (state == State.INITIALIZING)

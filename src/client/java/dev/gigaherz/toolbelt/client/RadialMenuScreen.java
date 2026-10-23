@@ -8,7 +8,6 @@ import dev.gigaherz.toolbelt.client.radial.TextRadialMenuItem;
 import dev.gigaherz.toolbelt.common.BeltContainer;
 import dev.gigaherz.toolbelt.common.BeltFinder;
 import dev.gigaherz.toolbelt.common.BeltRules;
-import dev.gigaherz.toolbelt.common.InventoryBeltHolder;
 import dev.gigaherz.toolbelt.network.SwapItemsPayload;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
@@ -49,7 +48,7 @@ public class RadialMenuScreen extends Screen
 
         Minecraft mc = Minecraft.getInstance();
         this.beltSlot = beltSlot;
-        this.beltStack = mc.player.getInventory().getItem(beltSlot);
+        this.beltStack = BeltFinder.holder(mc.player, beltSlot).getBelt();
 
         menu = new GenericRadialMenu(mc, new IRadialMenuHost()
         {
@@ -147,7 +146,7 @@ public class RadialMenuScreen extends Screen
                 return false;
         }
 
-        ItemStack stack = minecraft.player.getInventory().getItem(beltSlot);
+        ItemStack stack = BeltFinder.holder(minecraft.player, beltSlot).getBelt();
         if (stack != beltStack) // reference comparison intended: any replacement means contents may differ
         {
             beltStack = stack;
@@ -208,9 +207,12 @@ public class RadialMenuScreen extends Screen
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks)
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float frameDelta)
     {
-        super.extractRenderState(graphics, mouseX, mouseY, partialTicks);
+        super.extractRenderState(graphics, mouseX, mouseY, frameDelta);
+
+        // Screens receive the frame delta here; the menu animates against the tick fraction instead.
+        float partialTicks = minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(false);
 
         ItemStack inHand = minecraft.player.getMainHandItem();
         if (BeltRules.isItemStackAllowed(inHand) && menu.isReady())
@@ -234,7 +236,7 @@ public class RadialMenuScreen extends Screen
 
     private void rebuildItems(ItemStack inHand)
     {
-        BeltContainer inventory = new BeltContainer(new InventoryBeltHolder(minecraft.player.getInventory(), beltSlot));
+        BeltContainer inventory = new BeltContainer(BeltFinder.holder(minecraft.player, beltSlot));
 
         cachedMenuItems.clear();
         for (int i = 0; i < inventory.getContainerSize(); i++)
@@ -277,7 +279,9 @@ public class RadialMenuScreen extends Screen
         if (!inHand.isEmpty() || !itemMouseOver.isEmpty())
             ClientPlayNetworking.send(new SwapItemsPayload(beltSlot, slotNumber));
 
-        menu.close();
+        // Close at once after a selection; the closing animation is only for cancelling.
+        menu.closeImmediately();
+        onClose();
         return true;
     }
 

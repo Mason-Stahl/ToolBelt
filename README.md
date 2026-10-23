@@ -52,7 +52,8 @@ On a multiplayer server, both the server and every player need the mod and Fabri
 - **Upgrade a belt:** put a belt and a pouch anywhere in a crafting grid. Each upgrade adds one slot (2 slots to start, up to 9). The belt keeps everything stored in it.
 - **Dye a belt:** craft it with any dye, like leather armor.
 - **Fill the belt:** hold it and right-click to open its inventory. By default it only accepts items that don't stack (tools, weapons and so on).
-- **Swap tools:** keep the belt anywhere in your inventory. Hold **R** to open the radial menu, then click a slot to swap it with the item in your hand. Release R to cancel.
+- **Belt slot:** your inventory screen has a dedicated belt slot, just above the offhand slot (in the creative inventory tab it's on the other side of the player model). A belt there doesn't use up an inventory space. Shift-click a belt to move it there. It drops on death like the rest of your inventory, unless `keepInventory` is on.
+- **Swap tools:** keep the belt in the belt slot (or anywhere in your inventory). If you have more than one belt, the one in the belt slot is used. Hold **R** to open the radial menu, move the mouse over a slot, and let go of R to swap it with the item in your hand. Letting go in the middle, with nothing highlighted, cancels.
 
 Keys can be changed under Options → Controls → Key Binds → Tool Belt. There are also optional "cycle left/right" keys, which are unbound by default.
 
@@ -72,7 +73,7 @@ Config files are created in your `config` folder the first time you launch the g
 
 | Option | Default | What it does |
 |---|---|---|
-| `releaseToSwap` | `false` | Releasing the key swaps to the hovered slot, so you don't need to click |
+| `releaseToSwap` | `true` | Releasing the key swaps to the hovered slot. Set to `false` to require a click instead |
 | `clipMouseToCircle` | `false` | Keeps the mouse inside the menu ring |
 | `allowClickOutsideBounds` | `false` | Clicking outside the ring still picks the slot in that direction |
 | `displayEmptySlots` | `false` | Always shows empty slots, so you can choose where to insert |
@@ -97,6 +98,7 @@ To test in a development client or server:
 ```sh
 ./gradlew runClient
 ./gradlew runServer
+./gradlew runClientGameTest   # automated tests; screenshots in build/run/clientGameTest/screenshots
 ```
 
 ## Credits and license

@@ -3,7 +3,6 @@ package dev.gigaherz.toolbelt.network;
 import dev.gigaherz.toolbelt.common.BeltContainer;
 import dev.gigaherz.toolbelt.common.BeltFinder;
 import dev.gigaherz.toolbelt.common.BeltRules;
-import dev.gigaherz.toolbelt.common.InventoryBeltHolder;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -32,7 +31,7 @@ public final class BeltSwap
         if (!BeltFinder.isBeltSlot(player, beltSlot))
             return;
 
-        BeltContainer belt = new BeltContainer(new InventoryBeltHolder(player.getInventory(), beltSlot));
+        BeltContainer belt = new BeltContainer(BeltFinder.holder(player, beltSlot));
         int size = belt.getContainerSize();
         if (swapWith != SwapItemsPayload.INSERT && (swapWith < 0 || swapWith >= size))
             return;

@@ -28,6 +28,7 @@
 		"fabric-api": ">=0.165.0"
 	},
 	"mixins": [
+		"toolbelt.mixins.json",
 		{
 			"config": "toolbelt.client.mixins.json",
 			"environment": "client"

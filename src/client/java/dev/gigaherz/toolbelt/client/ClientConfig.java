@@ -18,7 +18,7 @@ public final class ClientConfig
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     /** Releasing the menu key activates the hovered slot. Otherwise a click is needed. */
-    public static boolean releaseToSwap = false;
+    public static boolean releaseToSwap = true;
     /** Keep the mouse from leaving the outer circle. */
     public static boolean clipMouseToCircle = false;
     /** Clicking outside the outer circle still activates the slot in that direction. */
@@ -30,7 +30,7 @@ public final class ClientConfig
 
     private static final class Data
     {
-        boolean releaseToSwap = false;
+        boolean releaseToSwap = true;
         boolean clipMouseToCircle = false;
         boolean allowClickOutsideBounds = false;
         boolean displayEmptySlots = false;

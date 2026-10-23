@@ -4,7 +4,6 @@ import com.mojang.blaze3d.platform.InputConstants;
 import dev.gigaherz.toolbelt.ToolBelt;
 import dev.gigaherz.toolbelt.common.BeltContainer;
 import dev.gigaherz.toolbelt.common.BeltFinder;
-import dev.gigaherz.toolbelt.common.InventoryBeltHolder;
 import dev.gigaherz.toolbelt.common.BeltRules;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -73,7 +72,7 @@ public class ToolBeltClient implements ClientModInitializer
             int beltSlot = BeltFinder.findBeltSlot(mc.player);
             if (beltSlot != BeltFinder.NONE)
             {
-                boolean beltEmpty = new BeltContainer(new InventoryBeltHolder(mc.player.getInventory(), beltSlot)).isEmpty();
+                boolean beltEmpty = new BeltContainer(BeltFinder.holder(mc.player, beltSlot)).isEmpty();
                 if (beltEmpty && mc.player.getMainHandItem().isEmpty())
                     mc.player.sendOverlayMessage(Component.translatable("text.toolbelt.nothing_to_swap"));
                 else

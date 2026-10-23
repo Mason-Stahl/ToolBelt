@@ -7,6 +7,7 @@ import dev.gigaherz.toolbelt.common.BeltMenu;
 import dev.gigaherz.toolbelt.common.BeltRules;
 import dev.gigaherz.toolbelt.network.BeltSwap;
 import dev.gigaherz.toolbelt.network.SwapItemsPayload;
+import dev.gigaherz.toolbelt.slot.BeltSlotAttachment;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.fabricmc.fabric.api.menu.v1.ExtendedMenuType;
@@ -64,6 +65,8 @@ public class ToolBelt implements ModInitializer
         PayloadTypeRegistry.serverboundPlay().register(SwapItemsPayload.TYPE, SwapItemsPayload.STREAM_CODEC);
         ServerPlayNetworking.registerGlobalReceiver(SwapItemsPayload.TYPE,
                 (payload, context) -> BeltSwap.handle(context.player(), payload.beltSlot(), payload.swapWith()));
+
+        BeltSlotAttachment.init();
 
         BeltRules.load();
     }
